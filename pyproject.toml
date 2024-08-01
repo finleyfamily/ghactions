@@ -24,6 +24,7 @@ repository = "https://github.com/finleyfamily/ghactions"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pydantic = "^2.8.2"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
@@ -163,6 +164,11 @@ select = ["ALL"]
   "S101",  # Use of `assert` detected - this is fine here
   "S108",  # Probable insecure usage of temporary file or directory
   "SLF001",  # Private member accessed - fine in tests
+]
+
+[tool.ruff.lint.flake8-type-checking]  # https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes
+runtime-evaluated-base-classes = [
+  "pydantic.BaseModel",
 ]
 
 [tool.ruff.lint.pydocstyle]  # https://docs.astral.sh/ruff/settings/#lintpydocstyle
