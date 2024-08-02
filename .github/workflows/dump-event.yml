@@ -1,0 +1,22 @@
+name: Dump Event
+
+on:
+  pull_request_target:
+  push:
+  pull_request:
+  create:
+
+permissions: read-all
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  dump-event:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ github.event }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event_name }}
+          path: ${{ github.event_path }}
