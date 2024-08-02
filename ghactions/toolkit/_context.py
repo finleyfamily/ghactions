@@ -60,18 +60,29 @@ class GithubContext(Generic[EventTypeVar]):
 
     """
 
-    def __init__(self, *, environ: dict[str, str] | None = None, event: EventTypeVar) -> None:
+    def __init__(
+        self,
+        *,
+        environ: dict[str, str] | None = None,
+        event: EventTypeVar,
+        event_path: Path | None = None,
+    ) -> None:
         """Instantiate object.
 
         Args:
             environ: Environment variables.
             event: The event that triggered the workflow.
+            event_path: Manually specificy the path to the event file that was loaded.
 
         """
+        self._event_path = event_path
         self.env = environ or os.environ.copy()
         self.event = event
 
-        self._payload = json.loads(self.event_path.read_text()) if self.event_path else {}
+        if self.event_path and self.event_path.is_file():
+            self._payload = json.loads(self.event_path.read_text())
+        else:
+            self._payload = {}
 
     @property
     def action(self) -> str:
@@ -134,7 +145,7 @@ class GithubContext(Generic[EventTypeVar]):
     @property
     def event_path(self) -> Path | None:
         """The path to the file on the runner that contains the full event webhook payload ."""
-        value = self.env.get("GITHUB_EVENT_PATH")
+        value = self._event_path or self.env.get("GITHUB_EVENT_PATH")
         return Path(value) if value else None
 
     @property
@@ -226,9 +237,13 @@ class GithubContext(Generic[EventTypeVar]):
         return GitHubContextRepo(repo["owner"]["login"], repo["name"])
 
     @property
-    def repository_url(self) -> str:
+    def repository_url(self) -> str | None:
         """The Git URL to the repository (from environment variables)."""
-        return f"{self.server_url}/{self.repository}"
+        return (
+            f"{self.server_url}/{self.repository.owner}/{self.repository.name}"
+            if self.repository
+            else None
+        )
 
     @property
     def server_url(self) -> str:
@@ -289,12 +304,15 @@ class GithubContext(Generic[EventTypeVar]):
         Also the default location of your repository when using the ``checkout`` action.
 
         """
-        value = self.env.get("GITHUB_EVENT_PATH")
+        value = self.env.get("GITHUB_WORKSPACE")
         return Path(value) if value else Path.cwd()
 
     @classmethod
     def from_file(
-        cls: type[Self], *, environ: dict[str, str] | None = None, event_path: Path | str | None
+        cls: type[Self],
+        *,
+        environ: dict[str, str] | None = None,
+        event_path: Path | str | None = None,
     ) -> Self:
         """Load event from a file.
 
@@ -308,4 +326,4 @@ class GithubContext(Generic[EventTypeVar]):
         event_path = Path(event_path) if not isinstance(event_path, Path) else event_path
         if not event_path.is_file():
             raise FileNotFoundError(event_path)
-        return cls(environ=environ, event=json.loads(event_path.read_text()))
+        return cls(environ=environ, event=json.loads(event_path.read_text()), event_path=event_path)

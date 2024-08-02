@@ -4,6 +4,7 @@ version = "0.0.0"
 authors = ["Kyle Finley <kyle@finley.sh>"]
 classifiers = [
   # https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Natural Language :: English",
   "Operating System :: OS Independent",
@@ -24,7 +25,7 @@ repository = "https://github.com/finleyfamily/ghactions"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pydantic = "^2.8.2"
+pydantic = "^2.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
@@ -75,7 +76,7 @@ exclude_lines = [
   "raise AssertionError",  # defensive exceptions
   "raise NotImplementedError",
 ]
-# fail_under = 100  # TODO (kyle): enable when implementing
+fail_under = 95
 precision = 2
 show_missing = true
 
