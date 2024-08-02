@@ -1,5 +1,3 @@
-name: default
-
 on:
   pull_request:  # any pull request
   push:
@@ -21,8 +19,6 @@ jobs:
       poetry-plugins: poetry-dynamic-versioning[plugin]
       python-version: ${{ matrix.python-version }}
   python-build:
-    needs:
-      - python-checks
     uses: finleyfamily/workflows/.github/workflows/python.build.yml@master
     with:
       poetry-plugins: poetry-dynamic-versioning[plugin]
@@ -30,3 +26,26 @@ jobs:
     uses: finleyfamily/workflows/.github/workflows/spellcheck.yml@master
     with:
       node-version: '20'
+  publish-test-pypi:
+    name: ⤴️ Publish 📦 To Test PyPI
+    if: github.event_name == 'push' && github.ref_name == 'master'
+    needs:
+      - python-checks
+      - python-build
+      - spellcheck
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/ghactions
+    permissions:
+      id-token: write
+    steps:
+      - name: Download Distribution Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pypi-dist
+          path: dist
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.9.0
+        with:
+          repository-url: https://test.pypi.org/legacy/
