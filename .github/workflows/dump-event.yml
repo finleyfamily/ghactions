@@ -15,7 +15,6 @@ jobs:
   dump-event:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ toJson(github.event) }}"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event_name }}
