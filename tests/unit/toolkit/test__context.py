@@ -23,6 +23,7 @@ class TestGithubContext:
 
     def test___init__(self, environ: dict[str, str]) -> None:
         """Test __init__."""
+        environ.pop("GITHUB_EVENT_PATH", "")
         ctx = GithubContext(event={"name": "foo"})
         assert ctx.env == environ
         assert ctx.event == {"name": "foo"}
