@@ -10,7 +10,7 @@ TEST_DIR = Path(__file__).parent
 
 
 @pytest.fixture(scope="session")
-def fixture_dir() -> Path:
+def test_fixture_dir() -> Path:
     """Return path to the ``tests/fixtures/`` directory."""
     return TEST_DIR / "fixtures"
 

@@ -4,6 +4,7 @@ version = "0.0.0"
 authors = ["Kyle Finley <kyle@finley.sh>"]
 classifiers = [
   # https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Natural Language :: English",
   "Operating System :: OS Independent",
@@ -24,6 +25,7 @@ repository = "https://github.com/finleyfamily/ghactions"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pydantic = "^2.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
@@ -74,7 +76,7 @@ exclude_lines = [
   "raise AssertionError",  # defensive exceptions
   "raise NotImplementedError",
 ]
-# fail_under = 100  # TODO (kyle): enable when implementing
+fail_under = 95
 precision = 2
 show_missing = true
 
@@ -163,6 +165,11 @@ select = ["ALL"]
   "S101",  # Use of `assert` detected - this is fine here
   "S108",  # Probable insecure usage of temporary file or directory
   "SLF001",  # Private member accessed - fine in tests
+]
+
+[tool.ruff.lint.flake8-type-checking]  # https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes
+runtime-evaluated-base-classes = [
+  "pydantic.BaseModel",
 ]
 
 [tool.ruff.lint.pydocstyle]  # https://docs.astral.sh/ruff/settings/#lintpydocstyle
