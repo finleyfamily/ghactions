@@ -18,7 +18,7 @@ keywords = []
 license = "Apache-2.0"
 maintainers = ["Kyle Finley <kyle@finley.sh>"]
 packages = [
-  {include = "ghactions"},
+  { include = "ghactions" },
 ]
 readme = "README.md"
 repository = "https://github.com/finleyfamily/ghactions"
@@ -178,11 +178,11 @@ convention = "google"
 [tool.tomlsort]
 all = true
 in_place = true
+overrides."tool.poetry".first = ["name", "version"]
+overrides."tool.poetry.dependencies".first = ["python"]
 sort_first = ["tool", "tool.poetry"]
 spaces_before_inline_comment = 2
 trailing_comma_inline_array = true
-overrides."tool.poetry".first = ["name", "version"]
-overrides."tool.poetry.dependencies".first = ["python"]
 
 [build-system]
 build-backend = "poetry_dynamic_versioning.backend"
